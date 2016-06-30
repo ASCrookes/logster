@@ -39,9 +39,8 @@ defmodule Logster.Plugs.Logger do
         kl = []
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
-        kl = if conn.remote_ip == nil, do: kl, else: Keyword.put(kl, :id, conn.remote_ip)
+        kl = if conn.remote_ip == nil, do: kl, else: Keyword.put(kl, :ip, conn.remote_ip)
         kl
-        |> Keyword.put(:ip, conn.remote_ip)
         |> Keyword.put(:duration, formatted_duration(duration))
         |> Keyword.put(:method, conn.method)
         |> Keyword.put(:path, conn.request_path)
