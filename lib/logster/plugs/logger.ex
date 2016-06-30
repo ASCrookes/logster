@@ -43,7 +43,7 @@ defmodule Logster.Plugs.Logger do
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
         |> Keyword.put(:duration, formatted_duration(duration))
-        |> Keyword.put(:state, conn.state)
+        |> Keyword.put(:ip, conn.remote_ip)
         |> formatter.format
       end
       conn
