@@ -45,6 +45,7 @@ defmodule Logster.Plugs.Logger do
         |> Keyword.put(:duration, formatted_duration(duration))
         ip = 
           if ip = Conn.get_req_header(conn, "x-forwarded-for") do
+            Logger.error("IP OBJECT: #{inspect ip}")
             case ip do
               [] -> "n/a"
               [ip | _] -> ip
