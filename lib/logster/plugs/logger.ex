@@ -36,15 +36,20 @@ defmodule Logster.Plugs.Logger do
         formatter = Keyword.get(opts, :formatter, Logster.StringFormatter)
         stop_time = current_time
         duration = time_diff(start_time, stop_time)
-        []
+        kl = []
         |> Keyword.put(:method, conn.method)
         |> Keyword.put(:path, conn.request_path)
         |> Keyword.merge(formatted_phoenix_info(conn))
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
         |> Keyword.put(:duration, formatted_duration(duration))
-        |> Keyword.put(:ip, conn.remote_ip)
-        |> formatter.format
+        kl = 
+          if ip = Keyword.get(conn.req_headers, "x-forwarded-for", nil) do
+            Keyword.put(:ip, ip)
+          else
+            Keyword.put(:ip, "n/a")
+          end
+        formatter.format(kl)
       end
       conn
     end)
