@@ -37,24 +37,15 @@ defmodule Logster.Plugs.Logger do
         stop_time = current_time
         duration = time_diff(start_time, stop_time)
         kl = []
-        |> Keyword.put(:method, conn.method)
-        |> Keyword.put(:path, conn.request_path)
-        |> Keyword.merge(formatted_phoenix_info(conn))
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
+        kl = if conn.remote_ip == nil, do: kl, else: Keyword.put(:id, conn.remote_ip)
+        kl
+        |> Keyword.put(:ip, conn.remote_ip)
         |> Keyword.put(:duration, formatted_duration(duration))
-        ip = 
-          if ip = Conn.get_req_header(conn, "x-forwarded-for") do
-            Logger.error("IP OBJECT: #{inspect ip}")
-            case ip do
-              [] -> "n/a"
-              [ip | _] -> ip
-            end
-          else
-            "n/a"
-          end
-        kl = Keyword.put(kl, :ip, ip)
-        formatter.format(kl)
+        |> Keyword.put(:method, conn.method)
+        |> Keyword.put(:path, conn.request_path)
+        |> formatter.format()
       end
       conn
     end)
