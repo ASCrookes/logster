@@ -25,4 +25,9 @@ defmodule Logster.StringFormatter do
   defp format_value(value) when is_map(value) do
     Poison.encode! value
   end
+  
+  defp format_value(value) when is_tuple(value) do
+    Tuple.to_list(value) |> Enum.join(".")
+  end
+
 end
