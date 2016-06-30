@@ -44,7 +44,8 @@ defmodule Logster.Plugs.Logger do
         |> Keyword.put(:status, conn.status)
         |> Keyword.put(:duration, formatted_duration(duration))
         kl = 
-          if ip = Keyword.get(conn.req_headers, "x-forwarded-for", nil) do
+          if ip = Conn.get_req_header(conn, "x-forwarded-for") do
+            [ip | _] = ip
             Keyword.put(:ip, ip)
           else
             Keyword.put(:ip, "n/a")
