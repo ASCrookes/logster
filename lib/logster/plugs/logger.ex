@@ -43,13 +43,17 @@ defmodule Logster.Plugs.Logger do
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
         |> Keyword.put(:duration, formatted_duration(duration))
-        kl = 
+        ip = 
           if ip = Conn.get_req_header(conn, "x-forwarded-for") do
             [ip | _] = ip
-            Keyword.put(:ip, ip)
+            case ip do
+              [] -> "n/a"
+              [ip | _] -> ip
+            end
           else
-            Keyword.put(:ip, "n/a")
+            "n/a"
           end
+        kl = Keyword.put(kl, :ip, ip)
         formatter.format(kl)
       end
       conn
