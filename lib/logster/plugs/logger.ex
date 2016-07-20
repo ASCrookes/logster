@@ -40,6 +40,8 @@ defmodule Logster.Plugs.Logger do
         |> Keyword.put(:params, filter_params(conn.params))
         |> Keyword.put(:status, conn.status)
         kl = if conn.remote_ip == nil, do: kl, else: Keyword.put(kl, :ip, conn.remote_ip)
+        user_id = conn.assigns.user_id
+        kl = if user_id, do: Keyword.put(kl, :user_id, user_id), else: kl
         kl
         |> Keyword.put(:duration, formatted_duration(duration))
         |> Keyword.put(:method, conn.method)
