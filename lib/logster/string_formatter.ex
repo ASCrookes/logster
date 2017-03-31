@@ -15,7 +15,9 @@ defmodule Logster.StringFormatter do
   end
 
   defp format_value(value) when is_float(value) do
-    Float.to_string(value, decimals: 3)
+    value
+    |> Float.ceil(3)
+    |> Float.to_string()
   end
 
   defp format_value(value) when is_atom(value) or is_integer(value) do
